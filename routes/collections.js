@@ -1,5 +1,5 @@
 const express = require('express');
-const { default: mongoose } = require('mongoose');
+const { default: mongoose, Collection } = require('mongoose');
 const router = express.Router();
 const Joi = require('joi');
 const {Collections } = require('../models/collections');
@@ -37,41 +37,41 @@ router.post('/', async (req, res) => {
   
 });
 
-router.put('/:id', async (req, res) => {
+// router.put('/:id', async (req, res) => {
   
-    // const {error}= validate(req.body);
-    // if(error)
-    // {
-    //   return res.status(400).send(error.details[0].message);
-    // }
+//     // const {error}= validate(req.body);
+//     // if(error)
+//     // {
+//     //   return res.status(400).send(error.details[0].message);
+//     // }
 
-    const cast=await Cast.findByIdAndUpdate(req.params.id,{
-        'name':req.body.name,
-        'birth_name':req.body.birth_name,
-        'image':req.body.image,
-        'description':req.body.description,
-        'date_of_birth':req.body.date_of_birth,
-        'videos':req.body.videos,
-        'height':req.body.height,
-        'contact_info':req.body.contact_info==null?{}:req.body.contact_info ,    
-      },{
-      new:true
-    });
+//     const cast=await Cast.findByIdAndUpdate(req.params.id,{
+//         'name':req.body.name,
+//         'birth_name':req.body.birth_name,
+//         'image':req.body.image,
+//         'description':req.body.description,
+//         'date_of_birth':req.body.date_of_birth,
+//         'videos':req.body.videos,
+//         'height':req.body.height,
+//         'contact_info':req.body.contact_info==null?{}:req.body.contact_info ,    
+//       },{
+//       new:true
+//     });
 
-    if(!cast)
-    return res.status(404).send('The genre with given ID downot exist');
-
-
-    res.send(cast);
+//     if(!cast)
+//     return res.status(404).send('The genre with given ID downot exist');
 
 
-});
+//     res.send(cast);
+
+
+// });
 
 router.delete('/:id', async (req, res) => {
-  const cast =await Cast.findByIdAndDelete(req.params.id);
-  if (!cast) return res.status(404).send('The cast with the given ID was not found.');
+  const collection =await Collections.findByIdAndDelete(req.params.id);
+  if (!collection) return res.status(404).send('The collection with the given ID was not found.');
 
-  res.send(cast);
+  res.send(collection);
 });
 
 router.get('/:id', async (req, res) => {
