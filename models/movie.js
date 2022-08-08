@@ -2,7 +2,23 @@ const Joi = require('joi');
 const mongoose= require('mongoose');
 const {genreSchemma}=require('./genres');
 const { Genre }=require('./genres');
+const castSchema=mongoose.Schema({
 
+    cast_id: mongoose.Schema.Types.ObjectId,
+    cast_name:{
+      type:String,
+    },
+});
+const reviewSchema=mongoose.Schema({
+
+    user_id: mongoose.Schema.Types.ObjectId,
+    user_name:{
+        type:String,
+    },
+    review:{
+      type:String,
+    },
+});
 
 const movieSchemma=mongoose.Schema({
 
@@ -18,14 +34,20 @@ const movieSchemma=mongoose.Schema({
         type:Number,
         min:0,
         max:10,
+        default:0,
         
     },
-    review:[{
-        type:String,
-    }],
+    review:{
+        type:[reviewSchema],
+        default:[],
+    },
+    cast:{
+        type:[castSchema],
+        default:[],
+    },
 });
 
-const Movie= mongoose.model('Movie',movieSchemma);
+const Movies = mongoose.model('Movies',movieSchemma);
 // const Review=mongoose.model('Review',reviewSchemma);
 
 function validateMovie(movie){
@@ -43,6 +65,6 @@ function validateMovie(movie){
 
 
 
-exports.Movie=Movie;
+exports.Movies=Movies;
 // exports.Review=Review;
 exports.validateMovie=validateMovie;

@@ -2,39 +2,53 @@ const express = require('express');
 const { default: mongoose } = require('mongoose');
 const router = express.Router();
 const Joi = require('joi');
-const {Movie}= require('../models/movie');
+const {Movies}= require('../models/movie');
 //const {Review}= require('../models/movie');
 const {validateMovie}=require('../models/movie');
 const { Genre } = require('../models/genres');
+const { Cast } = require('../models/casts');
 
 router.get('/',async (req,res)=>{
 
-    const movies=await Movie.find();
+    const movies=await Movies.find();
     console.log(movies);
     res.send(movies);
 
 });
+
 router.post('/',async (req,res)=>{
 
-    const{error}= validateMovie(req.body);
+    // const{error}= validateMovie(req.body);
 
-    if(error)
-    {
-        res.status(400).send("Invalid Body");
-    }
+    // if(error)
+    // {
+    //     res.status(400).send("Invalid Body");
+    // }
     const genre=await Genre.findById(req.body.genreId);
-    
+    let castArray=[];
+   // console.log(req);
+   for(i=0;i<req.body.castId.length;i++)
+   {
+          const cast=await Cast.findById(req.body.castId[i]);
+        //console.log(cast);
+            castArray.push({
+                cast_id:cast._id,
+                cast_name:cast.name,
+
+            });
+        
+   }
     if(!genre)
     res.status(400).send("Invalid Genre Id");
     
-    const movie =new Movie({
+    const movie =new Movies({
         title: req.body.title,
         genre: {
             _id:genre._id,
             name:genre.name
         },
-        rating:req.body.rating,
-        review: req.body.review,
+        cast:castArray,
+
     })
     const result= await movie.save();
 
@@ -54,7 +68,7 @@ router.put('/:id',async (req,res)=>{
     if(!genre)
     res.status(400).send("Invalid Genre Id");
     
-    const movie=await Movie.findByIdAndUpdate(req.params.id,{
+    const movie=await Movies.findByIdAndUpdate(req.params.id,{
         
         
         title: req.body.title,
@@ -62,8 +76,7 @@ router.put('/:id',async (req,res)=>{
             _id:genre._id,
             name:genre.name
         },
-        rating:req.body.rating,
-        review: req.body.review,
+     
 
     },{
         new:true
@@ -74,7 +87,7 @@ router.put('/:id',async (req,res)=>{
 
 router.delete('/:id',async (req,res)=>{
 
-    const movie=await Movie.findByIdAndDelete(req.params.id);
+    const movie=await Movies.findByIdAndDelete(req.params.id);
 
     if(!movie)
     res.status(400).send("The movie with given id doesnot exist");

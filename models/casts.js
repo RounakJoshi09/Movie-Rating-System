@@ -84,6 +84,7 @@ function validate(castBody){
         return Joi.validate(castBody,castSchema);
 }
 module.exports.Cast=Casts;
+module.exports.castSchema=castSchema;
 module.exports.validate=validate;
 // async function saveCast(){
 
