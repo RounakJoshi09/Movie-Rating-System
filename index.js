@@ -4,6 +4,7 @@ const express = require('express');
 const mongoose= require('mongoose');
 const users=require('./routes/customers');
 const movies=require('./routes/movies');
+const casts= require('./routes/casts');
 const app = express();
 
 
@@ -16,6 +17,7 @@ mongoose.connect('mongodb://localhost:27017/movie_rating_system')
 app.use('/api/movies',movies);
 app.use('/api/genres', genres);
 app.use('/api/users', users);
+app.use('/api/casts', casts);
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`Listening on port ${port}...`));
