@@ -3,6 +3,7 @@ const genres = require('./routes/genres');
 const express = require('express');
 const mongoose= require('mongoose');
 const users=require('./routes/customers');
+const movies=require('./routes/movies');
 const app = express();
 
 
@@ -12,6 +13,7 @@ mongoose.connect('mongodb://localhost:27017/movie_rating_system')
 .then(()=>console.log('Connected to MongoDB'))
 .catch((err)=>console.log('Error',err.message[0]));
 
+app.use('/api/movies',movies);
 app.use('/api/genres', genres);
 app.use('/api/users', users);
 

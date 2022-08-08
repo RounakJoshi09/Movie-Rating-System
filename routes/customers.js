@@ -2,28 +2,8 @@ const express = require('express');
 const { default: mongoose } = require('mongoose');
 const router = express.Router();
 const Joi = require('joi');
+const {User,validate}=require('../models/user');
 
-const userSchemma= mongoose.Schema({
-
-
-'name':{
-    type:String,
-    require:true,
-},
-'phone':{
-    type:String,
-    minlength:10,
-    maxlength:10,
-    require:true,
-},
-'isGold':{
-    type:Boolean,
-    require:true,
-}
-
-});
-
-const User=mongoose.model('User',userSchemma);
 
 router.get('/',async (req,res)=>{
 
@@ -34,7 +14,7 @@ router.get('/',async (req,res)=>{
 
 router.post('/',async (req,res)=>{
 
-    const {error}= validateUser(req.body);
+    const {error}= validate(req.body);
 
     if(error)
     {
@@ -54,18 +34,64 @@ router.post('/',async (req,res)=>{
 
 
 });
+router.put('/:id',async (req,res)=>{
 
+    const {error}= validate(req.body);
 
-function validateUser(user) {
-    const schema = {
-      name: Joi.string().min(3).required(),
-      phone:Joi.string(),
-      isGold:Joi.boolean(), 
-
-    };
+    if(error)
+    {
+        res.status(400).send("Body is Invalid");
+    }
+    const name=req.body.name;
+    const phone=req.body.phone;
+    const isGold=req.body.isGold;
+    let result;
+    if(name!=null && phone!=null & isGold!=null)
+     result= await User.findByIdAndUpdate(req.params.id,{name:name,phone:phone,isGold:isGold},{
+        new:true,
+     });
+     else if(name!=null && phone!=null)
+     result= await User.findByIdAndUpdate(req.params.id,{name:name,phone:phone},{
+        new:true,
+     });
+     else if(name!=null)
+     {
+        result= await User.findByIdAndUpdate(req.params.id,{name:name},{
+            new:true,
+         });
+     }
+     else if(phone!=null)
+     {
+        result= await User.findByIdAndUpdate(req.params.id,{phone:phone},{
+            new:true,
+         });
+     }
+     else if(isGold!=null)
+     {
+        result= await User.findByIdAndUpdate(req.params.id,{isGold:isGold},{
+            new:true,
+         });
+     }
   
-    return Joi.validate(user, schema);
-  }
+    res.send(result);
+
+
+
+});
+router.delete('/:id', async (req, res) => {
+    const user =await User.findByIdAndDelete(req.params.id);
+    if (!user) return res.status(404).send('The user with the given ID was not found.');
+  
+    res.send(user);
+  });
+
+router.get('/:id', async (req, res) => {
+    const user = await User.find({'_id':req.params.id});
+    if (!user) return res.status(404).send('The user with the given ID was not found.');
+    res.send(user);
+  });
+  
+  
 
 module.exports=router;
 
