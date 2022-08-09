@@ -21,7 +21,7 @@ router.post('/rate',async (req,res)=>{
 
     user.ratedMovies.push({
         movie_id: movie._id,
-        movie_name : movie.modelName,
+        movie_name : movie.title,
         rating: movie.rating, 
     });
     try {
@@ -53,13 +53,13 @@ router.post('/review',async (req,res)=>{
   
     movie.review.push({
         user_id : req.body.user_id,
-        user_name : user.modelName,
+        user_name : user.name,
         review : review,
 
     });
     user.reviewedMovies.push({
         movie_id: movie._id,
-        movie_name : movie.modelName,
+        movie_name : movie.title,
         review: review, 
     });
     try {
@@ -80,6 +80,30 @@ router.post('/review',async (req,res)=>{
 
 
 });
+
+router.get('/userReviews/:id',async (req,res)=>{
+
+    const user= await Users.findById(req.params.id);
+
+    var userdata=[];
+    for(i=0;i<user.reviewedMovies.length;i++)
+    {
+        userdata.push({
+            movie_name: user.reviewedMovies[i].movie_name,
+            review :  user.reviewedMovies[i].review
+        });
+    }
+    var data={
+        "success":true,
+        "data":userdata,
+        message:"",
+
+    };
+
+    res.send(data);
+
+});
+
 
 
 
