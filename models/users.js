@@ -90,16 +90,17 @@ const userSchemma= mongoose.Schema({
     });
     
 const Users=mongoose.model('Users',userSchemma);
-// function validateUser(user) {
-//         const schema = {
-//           name: Joi.string().min(3),
-//           phone:Joi.string(),
-//           isGold:Joi.boolean(), 
+function validateUser(user) {
+        const schema = {
+          name: Joi.string().min(3).required(),
+          phone:Joi.string().min(10).max(13).required(),
+          email:Joi.string().required(),
+          date_of_birth: Joi.string().required(),
     
-//         };
+        };
       
-//         return Joi.validate(user, schema);
-//       }
+        return Joi.validate(user, schema);
+      }
 // function validateUpdateUser(user) {
 // const schema = {
 //           name: Joi.string().min(3),
@@ -112,5 +113,5 @@ const Users=mongoose.model('Users',userSchemma);
 // }
 
 exports.Users=Users;
-//exports.validate=validateUser;
+exports.validate=validateUser;
         

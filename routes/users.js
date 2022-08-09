@@ -14,22 +14,17 @@ router.get('/',async (req,res)=>{
 
 router.post('/',async (req,res)=>{
 
-    // const {error}= validate(req.body);
+    const {error}= validate(req.body);
 
-    // if(error)
-    // {
-    //     res.status(400).send("Body is Invalid");
-    // }
+    if(error)
+    {
+        res.status(400).send("Body is Invalid");
+    }
     let user=new Users({
         name:req.body.name,
         phone:req.body.phone,
         email:req.body.email,
         dob:req.body.date_of_birth,
-        watchList:req.body.watchList,
-        ratedMovies:req.body.ratedMovies,
-        reviewedMovies:req.body.reviewedMovies,
-        
-
     });
 
     user= await user.save();
