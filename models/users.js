@@ -29,11 +29,13 @@ const ratedMovieSchema={
   },
   movie_image:{
     type:String,
+    default:"",
   },
   rating:{
     type:Number,
     min:0,
     max:10,
+    default:0
   }
 }
 const reviewedMovieSchema={
