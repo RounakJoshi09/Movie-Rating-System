@@ -81,6 +81,34 @@ router.post('/review',async (req,res)=>{
 
 });
 
+router.get('/movieRating/:id',async (req,res)=>{
+
+    const movie = await Movies.findById(req.params.id);
+
+    var data={
+        "success":true,
+        "rating": movie.rating,
+        message:"",
+
+    };
+    res.send(data);
+
+});
+
+router.get('/movieReviews/:id',async (req,res)=>{
+
+    const movie = await Movies.findById(req.params.id);
+
+    var data={
+        "success":true,
+        "rating": movie.review,
+        message:"",
+
+    };
+    res.send(data);
+
+});
+
 router.get('/userReviews/:id',async (req,res)=>{
 
     const user= await Users.findById(req.params.id);
@@ -103,7 +131,6 @@ router.get('/userReviews/:id',async (req,res)=>{
     res.send(data);
 
 });
-
 
 
 

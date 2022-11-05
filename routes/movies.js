@@ -7,7 +7,7 @@ const {Movies}= require('../models/movie');
 const {validateMovie}=require('../models/movie');
 const { Genre } = require('../models/genres');
 const { Cast } = require('../models/casts');
-
+const auth = require('../middleware/auth');
 router.get('/',async (req,res)=>{
 
     const movies=await Movies.find();
@@ -16,9 +16,9 @@ router.get('/',async (req,res)=>{
 
 });
 
-router.post('/',async (req,res)=>{
+router.post('/',auth,async (req,res)=>{
 
-    // const{error}= validateMovie(req.body);
+    //const{error}= validateMovie(req.body);
 
     // if(error)
     // {

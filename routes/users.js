@@ -3,7 +3,9 @@ const { default: mongoose } = require('mongoose');
 const router = express.Router();
 const Joi = require('joi');
 const {Users,validate}=require('../models/users');
-
+const _ = require('lodash');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 router.get('/',async (req,res)=>{
 
@@ -14,22 +16,40 @@ router.get('/',async (req,res)=>{
 
 router.post('/',async (req,res)=>{
 
-    const {error}= validate(req.body);
+    const {error} = validate(req.body);
 
     if(error)
     {
-        res.status(400).send("Body is Invalid");
+        return res.status(400).send(error.details[0].message);
     }
-    let user=new Users({
+
+    
+
+    let user = await Users.findOne({email: req.body.email});
+
+    if(user)
+    {
+        res.status(400).send("User Already Registered");
+    }
+
+    user = new Users({
         name:req.body.name,
         phone:req.body.phone,
         email:req.body.email,
+        password:req.body.password,
         dob:req.body.date_of_birth,
     });
 
-    user= await user.save();
+    const salt = await bcrypt.genSalt(10);
 
-    res.send(user);
+    user.password = await bcrypt.hash(user.password , salt);
+
+    user = await user.save();
+    
+     
+     
+    const token = user.generateAuthToken();
+    res.header('x-auth-token',token).send(_.pick(user,['name','email','_id']));
 
 
 

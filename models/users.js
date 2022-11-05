@@ -1,6 +1,6 @@
 const Joi = require('joi');
 const { default: mongoose } = require('mongoose');
-
+const jwt = require('jsonwebtoken');
 
 const watchListSchemma= mongoose.Schema({
 
@@ -61,16 +61,26 @@ const userSchemma= mongoose.Schema({
 'name':{
         type:String,
         require:true,
+        minlength:3,
+        maxlength:50,
     },
     'phone':{
         type:String,
         minlength:10,
-        maxlength:10,
-        require:true,
+        maxlength:13,
+        default:"",
     },
     'email':{
       type:String,
       require:true,
+      unique:true,
+    },
+    'password':{
+      type:String,
+      require:true,
+      minlength:6,
+      maxlength:1024,
+
     },
     'dob':{
       type:String,
@@ -90,14 +100,37 @@ const userSchemma= mongoose.Schema({
     },
     
     });
-    
+userSchemma.methods.generateAuthToken = function(){
+  const token = jwt.sign({id:this._id},'jwtPrivateKey');
+  return token;
+   
+} ;   
 const Users=mongoose.model('Users',userSchemma);
+
+function validatePassword(pass){
+
+ const complexityOptions = {
+    min: 10,
+    max: 30,
+    lowerCase: 1,
+    upperCase: 1,
+    // numeric: 1,
+    // symbol: 1,
+    // requirementCount: 2,
+  }
+  return Joi.validate(pass, new PasswordComplexity(complexityOptions));
+
+
+
+}
 function validateUser(user) {
+ 
         const schema = {
-          name: Joi.string().min(3).required(),
-          phone:Joi.string().min(10).max(13).required(),
-          email:Joi.string().required(),
-          date_of_birth: Joi.string().required(),
+          name: Joi.string().min(3).max(33).required(),
+          phone:Joi.string().min(10).max(13),
+          email:Joi.string().email().required(),
+          password:Joi.string().required().max(50),
+          date_of_birth: Joi.string(),
     
         };
       

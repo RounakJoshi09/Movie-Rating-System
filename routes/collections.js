@@ -5,7 +5,7 @@ const Joi = require('joi');
 const {Collections } = require('../models/collections');
 const {Movie}= require('../models/movie');
 //const{validate} =  require('../models/casts');
-
+const auth = require('../middleware/auth');
 router.get('/', async(req, res) => {
 
     const collections = await Collections.find().sort('name');
@@ -15,7 +15,7 @@ router.get('/', async(req, res) => {
 });
 
 
-router.post('/', async (req, res) => {
+router.post('/', auth,async (req, res) => {
 //    const { error } = validate(req.body); 
 //   if (error) return res.status(400).send(error.details[0].message);
     const movie = await Movie.findById(req.body.movie_id);
@@ -67,7 +67,7 @@ router.post('/', async (req, res) => {
 
 // });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', auth,async (req, res) => {
   const collection =await Collections.findByIdAndDelete(req.params.id);
   if (!collection) return res.status(404).send('The collection with the given ID was not found.');
 
